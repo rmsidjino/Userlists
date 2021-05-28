@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block body %}
+<head>
+	<meta charset="UTF-8">
+    <style>
+		table, th, td { border: 1px solid black; }
+        thead { color: blue; }
+        tbody { color: green; }
+        tfoot { color: red; }
+        th {
+        text-align: center;
+        }
+        td {
+        text-align: center;
+        }
+
+	</style>
+</head>
+
+<div class="jumbotron">
+    <h1 class="display-4">{{article['title']}}</h1>
+    <body>
+        {{article['body']}}
+        
+    </body>
+      <a class="btn btn-primary btn-lg" href="/articles" role="button">돌아가기</a>
+    </p>
+  </div>
+{% endblock %} 
