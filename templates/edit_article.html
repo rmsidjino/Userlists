@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block body %}
+<head>
+	<meta charset="UTF-8">
+    <style>
+		table, th, td { border: 1px solid black; }
+        thead { color: blue; }
+        tbody { color: green; }
+        tfoot { color: red; }
+        th {
+        text-align: center;
+        }
+        td {
+        text-align: center;
+        }
+
+	</style>
+</head>
+
+<div class="jumbotron">
+    <h1 class="display-4">{{article[1]}}</h1>
+    <body>
+        <form action="/articles/{{article[0]}}/edit" method="POST">
+            제목 : <input type="text" value="{{article[1]}}" name = "title"><br>
+            내용 : <textarea name="description" cols = '30' rows='10'>{{article[2]}}</textarea><br>
+            글쓴이 : <input type="text" value ="{{article[3]}}" name="author"><br>
+            <input type="submit" value ="저장">
+        </form>
+    </body>
+      <a class="btn btn-primary btn-lg" href="/articles" role="button">취소</a>
+    </p>
+  </div>
+{% endblock %} 

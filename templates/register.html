@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<div class="jumbotron">
+    <h1 class="display-4">회원가입</h1>
+    <body>
+
+        <form action="/register" method="POST">
+            이름 : <input type="text" name="name"><br>
+            이메일 : <input type="email" name="email"><br>
+            유저네임 : <input type="text" name="username"><br>
+            비밀번호 : <input type="password" name="password"><br>
+            <input type="submit" value ="제출">
+        </form>
+    
+    </body>
+      <a class="btn btn-primary btn-lg" href="/" role="button">돌아가기</a>
+    </p>
+  </div>
+{% endblock %} 

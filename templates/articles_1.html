@@ -34,12 +34,12 @@
             <tbody>
                 {% for article in articles %}
                 <tr>
-                    <td width = "20">{{article[0]}}</td>
-                    <td width = "90"></tdwidth> <a href="/article/{{article[0]}}" > {{article[1]}}</a></td>
-                    <td>{{article[3]}}</td>
-                    <td width = "90">{{article[4]}}</td>
-                    <td><a class="btn btn-warning" href="/articles/{{article[0]}}/edit" role="button">EDIT</a></td>
-                    <td><a class="btn btn-danger" href="/articles/{{article[0]}}/delete" role="button" onclick="return confirm('정말삭제하시겠습니까?');">DELETE</a></td>
+                    <td width = "20">{{article['id']}}</td>
+                    <td width = "90"></tdwidth> <a href="/article/{{article['id']}}" > {{article['title']}}</a></td>
+                    <td>{{article['author']}}</td>
+                    <td width = "90">{{article['create_date']}}</td>
+                    <td><a class="btn btn-warning" href="#" role="button">EDIT</a></td>
+                    <td><a class="btn btn-danger" href="#" role="button">DELETE</a></td>
                 
                 </tr>
                 {% endfor %}

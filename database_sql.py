@@ -29,6 +29,8 @@ db = pymysql.connect(
     charset='utf8mb4')
 
 cur = db.cursor()
+'''
+cur = db.cursor()
 
 #query = "SELECT * FROM topic"
 #cur.execute(query)
@@ -50,7 +52,21 @@ query = 'INSERT INTO `gangnam`.`topic` (`id`, `title`, `description`, `author`) 
 
 #query = 'DELETE FROM `gangnam`.`topic` WHERE (`id` = "2");'
 
+
+
+db.close()
+'''
+query = ''' 
+        CREATE TABLE users(
+            id INT(11) AUTO_INCREMENT PRIMARY KEY, 
+            name VARCHAR(100),
+            email VARCHAR(100),
+            username VARCHAR(30),
+            password VARCHAR(100),
+            register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+            ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    '''
+
 cur.execute(query)
 db.commit()
-
 db.close()
