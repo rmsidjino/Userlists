@@ -24,7 +24,29 @@ def is_loged_in(f):
             return redirect('/login')
     return _wraps
 
+def is_admin(f):
+    @wraps(f)
+    def _wraps(*argrs,**kwargs):
+        if session != None:
+            if session['email'] == 'admin@naver.com':
+                return f(*argrs,**kwargs)
+            else:
+                return redirect('/')
+        return redirect('/')
+    return _wraps
+
+def is_signin(f):
+    @wraps(f)
+    def _wraps(*argrs,**kwargs):
+        if bool(session) == False:
+            print (session, "test")
+            return f(*argrs,**kwargs)
+        else:
+            return redirect('/')
+    return _wraps
+
 @app.route('/register',methods = ["GET","POST"])
+@is_signin
 def register():
     if request.method == "POST":
         name = request.form['name']
@@ -38,7 +60,7 @@ def register():
         cur.execute(sql)
         db.commit()
         user_email = cur.fetchone()
-        print (email)
+
         if user_email == None:
             query = f"INSERT INTO users (name, email, username, password) VALUES('{name}','{email}','{username}','{password}')"
             cur.execute(query)
@@ -48,6 +70,7 @@ def register():
             return render_template('register.html')
     else:
         return render_template('register.html')
+
 
 @app.route('/login',methods = ["GET","POST"])
 def login():
@@ -89,13 +112,14 @@ def about():
     return render_template('about.html')
 
 @app.route('/admin')
+@is_admin
 def admin():
     query = "SELECT * FROM users"
     cur.execute(query)
     db.commit()
     users = cur.fetchall()
     print (users)
-    return render_template('admin.html', users=users)
+    return render_template('admin.html', users=users, articles = articles)
 
 @app.route('/admin/<id>/delete')
 @is_loged_in

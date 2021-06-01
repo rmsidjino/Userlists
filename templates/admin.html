@@ -39,7 +39,21 @@
                     <td>{{user[5]}}</td>
                     {% if user[2] != 'admin@naver.com' %}
                     <td><a class="btn btn-danger" href="/admin/{{user[0]}}/delete" role="button" onclick="return confirm('정말삭제하시겠습니까?');">회원정보삭제</a></td>
+                    <td>
+                        <form action="/edit_auth" method="post">
+                        <div align="center" id="mainselection">
+                        <select name= "number">
+                            {% for num in users %}
+                            <option value= "{{number}}" SELECTED>{{num[0]}}</option>"
+                            {% endfor %}
+                        </select>
+                        </div>
+                        <button class="button execute" name="submit" value="submit">등록</button>
+                        </form>
+                    </td>
+                    
                     {% endif %}
+                    
                 </tr>
                 {% endfor %}
             </tbody>
