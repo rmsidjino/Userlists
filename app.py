@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session
 from data import Articles
 import pymysql
 from passlib.hash import sha256_crypt
-
+from functools import wraps
 app = Flask(__name__)
 #articles = Articles()
 
@@ -14,6 +14,16 @@ db = pymysql.connect(
     charset='utf8mb4')
 
 cur = db.cursor()
+
+def is_loged_in(f):
+    @wraps(f)
+    def _wraps(*argrs,**kwargs):
+        if 'is_loged' in session:
+            return f(*argrs,**kwargs)
+        else:
+            return redirect('/login')
+    return _wraps
+
 @app.route('/register',methods = ["GET","POST"])
 def register():
     if request.method == "POST":
@@ -33,7 +43,7 @@ def register():
             query = f"INSERT INTO users (name, email, username, password) VALUES('{name}','{email}','{username}','{password}')"
             cur.execute(query)
             db.commit()
-            return "SUCCESS"
+            return redirect('/login')
         else:
             return render_template('register.html')
     else:
@@ -42,7 +52,23 @@ def register():
 @app.route('/login',methods = ["GET","POST"])
 def login():
     if request.method == "POST":
-        return "SUCCESS"
+        email = request.form['email']
+        password = request.form['password']
+        print(email,password)
+        query = f"SELECT * FROM users WHERE email = '{email}'"
+        cur.execute(query)
+        db.commit()
+        user = cur.fetchone()
+        if user == None:
+            return redirect('/login')
+        else:
+            if sha256_crypt.verify(password,user[4]):
+                session['is_loged'] = True
+                session['email'] = user[2]
+                session['username'] = user[3]
+                return redirect('/')
+            else:
+                return redirect('/login')
     else:
         return render_template("login.html")
 
@@ -51,11 +77,39 @@ def login():
 def hello_world():
     return render_template('home.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
 @app.route('/about',methods=['GET' , 'POST'])
+@is_loged_in
 def about():
+    print(session['username'])
     return render_template('about.html')
 
+@app.route('/admin')
+def admin():
+    query = "SELECT * FROM users"
+    cur.execute(query)
+    db.commit()
+    users = cur.fetchall()
+    print (users)
+    return render_template('admin.html', users=users)
+
+@app.route('/admin/<id>/delete')
+@is_loged_in
+def delete_user(id):
+    query = f'DELETE FROM `gangnam`.`users` WHERE `id` = {id}'
+
+    cur.execute(query)
+    db.commit()
+
+    return redirect('/admin')
+    article = cur.fetchall()
+
 @app.route('/articles',methods=['Get' , 'POST'])
+@is_loged_in
 def articles():
     
     query = "SELECT * FROM topic"
@@ -67,6 +121,7 @@ def articles():
     return render_template('articles.html', articles = articles)
 
 @app.route('/article/<id>',methods=['Get' , 'POST'])
+@is_loged_in
 def article(id):
 
     query = f"SELECT * FROM topic where id = {id}"
@@ -87,6 +142,7 @@ def article(id):
 '''
 
 @app.route('/add_article', methods=['GET','POST'])
+@is_loged_in
 def add_article():
     cur = db.cursor()
     
@@ -106,6 +162,7 @@ def add_article():
     return "SECESS"
 
 @app.route('/articles/<id>/delete')
+@is_loged_in
 def delete_article(id):
     query = f'DELETE FROM `gangnam`.`topic` WHERE `id` = {id}'
 
@@ -116,6 +173,7 @@ def delete_article(id):
     article = cur.fetchall()
 
 @app.route('/articles/<id>/edit', methods = ['GET','POST'])
+@is_loged_in
 def edit_article(id):
     if request.method == "POST":
         title = request.form['title']
@@ -141,4 +199,5 @@ def edit_article(id):
 
 
 if __name__ == '__main__':
+    app.secret_key = "gangnamsmart"
     app.run(port = 5000, debug = True ) 

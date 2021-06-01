@@ -14,8 +14,15 @@
   <li><a href="/">Home</a></li>
   <li><a href="/about">About</a></li>
   <li><a href="/articles">Articles</a></li>
+  {% if session['email'] == "admin@naver.com" %}
+  <li><a href="/admin">Admin</a></li>
+  {% endif %}
   </ul>
+  {% if session['username'] %}
+  <td><a class="btn btn-warning" href="/logout" role="button" style="float: right;">Sign out</a></td>
+  {% else %}
   <td><a class="btn btn-warning" href="/login" role="button" style="float: right;">Sign in</a></td>
   <td><a class="btn btn-success" href="/register" role="button" style="float: right;">Sign up</a></td>
+  {% endif %}
   </div><!--/.nav-collapse -->
   </div> </nav>
